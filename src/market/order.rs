@@ -1,16 +1,19 @@
+#[derive(Clone, Copy)]
 pub enum OrderDirection {
     BID,
     ASK,
     IDLE,
 }
 
+#[derive(Clone, Copy)]
 pub enum OrderAction {
     LIMIT,
     MARKET,
-    CANCLE,
+    CANCEL,
     IDLE,
 }
 
+#[derive(Clone, Copy)]
 pub struct Order {
     id: u128,
     action: OrderAction,
@@ -21,9 +24,9 @@ pub struct Order {
 }
 
 impl Order {
-    pub fn new(identifer: u128) -> Order {
-        Order {
-            id: identifer,
+    pub fn new(identifier: u128) -> Self {
+        Self {
+            id: identifier,
             action: OrderAction::IDLE,
             direction: OrderDirection::IDLE,
             price: 0,
@@ -33,15 +36,10 @@ impl Order {
     }
 
     pub fn clear(&mut self) {
-        self.id = 0;
-        self.action = OrderAction::IDLE;
-        self.direction = OrderDirection::IDLE;
-        self.price = 0;
-        self.amount = 0;
-        self.reference = 0;
+        *self = Order::new(0); // Simplify by creating a new Order with default values
     }
 
-    pub fn setValues(
+    pub fn set_values(
         &mut self,
         action: OrderAction,
         direction: OrderDirection,
@@ -60,12 +58,12 @@ impl Order {
         self.id
     }
 
-    pub fn action(&self) -> &OrderAction {
-        &self.action
+    pub fn action(&self) -> OrderAction {
+        self.action
     }
 
-    pub fn direction(&self) -> &OrderDirection {
-        &self.direction
+    pub fn direction(&self) -> OrderDirection {
+        self.direction
     }
 
     pub fn price(&self) -> u128 {

@@ -25,23 +25,22 @@ impl OrderBook {
         amount: u128,
         reference: u128,
     ) {
-        let mut order: Order = self
+        let order: Order = self
             .pool
             .build_order(reference, action, direction, price, amount);
 
         match order.action() {
             OrderAction::LIMIT => self.process_limit(order),
             OrderAction::MARKET => self.process_limit(order),
-            OrderAction::CANCLE => self.process_limit(order),
+            OrderAction::CANCEL => self.process_limit(order),
             OrderAction::IDLE => return,
         }
     }
 
     pub fn process_limit(&mut self, order: Order) {
-        let mut matching_orders;
         match order.direction() {
-            OrderDirection::BID => matching_orders = self.find_matching_orders(self.ask, order),
-            OrderDirection::ASK => matching_orders = self.find_matching_orders(self.bid, order),
+            OrderDirection::BID => self.find_matching_orders(&self.ask, order),
+            OrderDirection::ASK => self.find_matching_orders(&self.bid, order),
             OrderDirection::IDLE => return,
         }
     }
@@ -50,10 +49,10 @@ impl OrderBook {
         &self.pool
     }
 
-    fn find_matching_orders(&self, order_store: OrderStore, order: Order) {
+    fn find_matching_orders(&self, order_store: &OrderStore, order: Order) {
         match order.action() {
             OrderAction::LIMIT => {
-                let orders_iterators = order_store.headSet(order.price());
+                let orders_iterators = order_store.head_set(order.price());
                 return;
             }
             _ => {
